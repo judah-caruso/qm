@@ -6,13 +6,16 @@ package qm
 
 //go:nosplit
 //go:noescape
-func add_array_2_float32(l [2]float32, r [2]float32) [2]float32
+func add_arrayof_2float32(l [2]float32, r [2]float32) [2]float32
 
 //go:nosplit
-func sub_array_2_float32(l [2]float32, r [2]float32) [2]float32
+//go:noescape
+func sub_arrayof_2float32(l [2]float32, r [2]float32) [2]float32
 
 //go:nosplit
-func mul_array_2_float32(l [2]float32, r [2]float32) [2]float32
+//go:noescape
+func mul_arrayof_2float32(l [2]float32, r [2]float32) [2]float32
 
 //go:nosplit
-func div_array_2_float32(l [2]float32, r [2]float32) [2]float32
+//go:noescape
+func div_arrayof_2float32(l [2]float32, r [2]float32) [2]float32

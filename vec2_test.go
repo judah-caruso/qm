@@ -6,10 +6,10 @@ import (
 )
 
 func TestVec2_Ops(t *testing.T) {
-	a := qm.Vec2{1, 1}
+	a := qm.Vec2{1, 2}
 
 	{ // addition
-		b := a.Add(qm.Vec2{1, 2})
+		b := a.Add(qm.Vec2{1, 1})
 		Expectf(t, b[qm.X] == 2 && b[qm.Y] == 3, "incorrect result: %s", b)
 	}
 }
@@ -43,14 +43,14 @@ func TestVec2_SwizzleNoMethod(t *testing.T) {
 func BenchmarkVec2_AsmAdd(b *testing.B) {
 	a := qm.Vec2{1, 2}
 	for i := 0; i < b.N; i++ {
-		a = a.Add(qm.Vec2{float32(i), float32(i - 1)})
+		a = qm.Vec2.Add(a, a)
 	}
 }
 
 func BenchmarkVec2_GoAdd(b *testing.B) {
 	a := qm.Vec2{1, 2}
 	for i := 0; i < b.N; i++ {
-		a = puregoVec2_Add(a, qm.Vec2{float32(i), float32(i - 1)})
+		a = puregoVec2_Add(a, a)
 	}
 }
 

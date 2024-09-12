@@ -4,6 +4,7 @@
 package main
 
 import (
+	"fmt"
 	. "github.com/mmcloughlin/avo/build"
 	"github.com/mmcloughlin/avo/buildtags"
 	"github.com/mmcloughlin/avo/operand"
@@ -13,57 +14,27 @@ func main() {
 	defer Generate()
 	Constraint(buildtags.Term("amd64"))
 
-	TEXT("add_array_2_float32", NOSPLIT|NOFRAME, "func(l, r [2]float32) [2]float32")
-	Pragma("nosplit")
-	Pragma("noescape")
-	{
-		rx := Load(Param("r").Index(0), XMM())
-		ADDSS(operand.NewParamAddr("l", 0), rx)
-		Store(rx, ReturnIndex(0).Index(0))
-
-		ry := Load(Param("r").Index(1), XMM())
-		ADDSS(operand.NewParamAddr("l", 4), ry)
-		Store(ry, ReturnIndex(0).Index(1))
-
-		RET()
+	arrayof_2float32_procs := []struct {
+		name string
+		inst func(operand.Op, operand.Op)
+	}{
+		{name: "add", inst: ADDSS},
+		{name: "sub", inst: SUBSS},
+		{name: "mul", inst: MULSS},
+		{name: "div", inst: DIVSS},
 	}
 
-	TEXT("sub_array_2_float32", NOSPLIT|NOFRAME, "func(l, r [2]float32) [2]float32")
-	Pragma("nosplit")
-	{
+	for _, proc := range arrayof_2float32_procs {
+		TEXT(fmt.Sprintf("%s_arrayof_2float32", proc.name), NOSPLIT|NOFRAME, "func(l, r [2]float32) [2]float32")
+		Pragma("nosplit")
+		Pragma("noescape")
+
 		rx := Load(Param("r").Index(0), XMM())
-		SUBSS(operand.NewParamAddr("l", 0), rx)
+		proc.inst(operand.NewParamAddr("l", 0), rx)
 		Store(rx, ReturnIndex(0).Index(0))
 
 		ry := Load(Param("r").Index(1), XMM())
-		SUBSS(operand.NewParamAddr("l", 4), ry)
-		Store(ry, ReturnIndex(0).Index(1))
-		RET()
-	}
-
-	TEXT("mul_array_2_float32", NOSPLIT|NOFRAME, "func(l, r [2]float32) [2]float32")
-	Pragma("nosplit")
-	{
-		rx := Load(Param("r").Index(0), XMM())
-		MULSS(operand.NewParamAddr("l", 0), rx)
-		Store(rx, ReturnIndex(0).Index(0))
-
-		ry := Load(Param("r").Index(1), XMM())
-		MULSS(operand.NewParamAddr("l", 4), ry)
-		Store(ry, ReturnIndex(0).Index(1))
-
-		RET()
-	}
-
-	TEXT("div_array_2_float32", NOSPLIT|NOFRAME, "func(l, r [2]float32) [2]float32")
-	Pragma("nosplit")
-	{
-		rx := Load(Param("r").Index(0), XMM())
-		DIVSS(operand.NewParamAddr("l", 0), rx)
-		Store(rx, ReturnIndex(0).Index(0))
-
-		ry := Load(Param("r").Index(1), XMM())
-		DIVSS(operand.NewParamAddr("l", 4), ry)
+		proc.inst(operand.NewParamAddr("l", 4), ry)
 		Store(ry, ReturnIndex(0).Index(1))
 
 		RET()

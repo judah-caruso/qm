@@ -4,9 +4,9 @@
 
 #include "textflag.h"
 
-// func add_array_2_float32(l [2]float32, r [2]float32) [2]float32
+// func add_arrayof_2float32(l [2]float32, r [2]float32) [2]float32
 // Requires: SSE
-TEXT ·add_array_2_float32(SB), NOSPLIT|NOFRAME, $0-24
+TEXT ·add_arrayof_2float32(SB), NOSPLIT|NOFRAME, $0-24
 	MOVSS r_0+8(FP), X0
 	ADDSS l+0(FP), X0
 	MOVSS X0, ret_0+16(FP)
@@ -15,9 +15,9 @@ TEXT ·add_array_2_float32(SB), NOSPLIT|NOFRAME, $0-24
 	MOVSS X0, ret_1+20(FP)
 	RET
 
-// func sub_array_2_float32(l [2]float32, r [2]float32) [2]float32
+// func sub_arrayof_2float32(l [2]float32, r [2]float32) [2]float32
 // Requires: SSE
-TEXT ·sub_array_2_float32(SB), NOSPLIT|NOFRAME, $0-24
+TEXT ·sub_arrayof_2float32(SB), NOSPLIT|NOFRAME, $0-24
 	MOVSS r_0+8(FP), X0
 	SUBSS l+0(FP), X0
 	MOVSS X0, ret_0+16(FP)
@@ -26,9 +26,9 @@ TEXT ·sub_array_2_float32(SB), NOSPLIT|NOFRAME, $0-24
 	MOVSS X0, ret_1+20(FP)
 	RET
 
-// func mul_array_2_float32(l [2]float32, r [2]float32) [2]float32
+// func mul_arrayof_2float32(l [2]float32, r [2]float32) [2]float32
 // Requires: SSE
-TEXT ·mul_array_2_float32(SB), NOSPLIT|NOFRAME, $0-24
+TEXT ·mul_arrayof_2float32(SB), NOSPLIT|NOFRAME, $0-24
 	MOVSS r_0+8(FP), X0
 	MULSS l+0(FP), X0
 	MOVSS X0, ret_0+16(FP)
@@ -37,9 +37,9 @@ TEXT ·mul_array_2_float32(SB), NOSPLIT|NOFRAME, $0-24
 	MOVSS X0, ret_1+20(FP)
 	RET
 
-// func div_array_2_float32(l [2]float32, r [2]float32) [2]float32
+// func div_arrayof_2float32(l [2]float32, r [2]float32) [2]float32
 // Requires: SSE
-TEXT ·div_array_2_float32(SB), NOSPLIT|NOFRAME, $0-24
+TEXT ·div_arrayof_2float32(SB), NOSPLIT|NOFRAME, $0-24
 	MOVSS r_0+8(FP), X0
 	DIVSS l+0(FP), X0
 	MOVSS X0, ret_0+16(FP)

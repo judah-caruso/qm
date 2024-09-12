@@ -14,6 +14,9 @@ func main() {
 	defer Generate()
 	Constraint(buildtags.Term("amd64"))
 
+	// Until the Go compiler inlines assembly functions,
+	// this will be slower in almost all cases.
+
 	arrayof_2float32_procs := []struct {
 		name string
 		inst func(operand.Op, operand.Op)

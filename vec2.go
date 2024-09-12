@@ -44,42 +44,42 @@ func (l Vec2) KindaEq(r Vec2) bool {
 
 // Add component-wise adds two Vec2. Returns a new Vec2.
 func (l Vec2) Add(r Vec2) Vec2 {
-	return add_arrayof_2float32(l, r)
+	return Vec2{l[X] + r[X], l[Y] + r[Y]}
 }
 
 // Addf component-wise adds Vec2 and float32. Returns a new Vec2.
 func (l Vec2) Addf(r float32) Vec2 {
-	return add_arrayof_2float32(l, Vec2{r, r})
+	return Vec2{l[X] + r, l[Y] + r}
 }
 
 // Sub component-wise subtracts two Vec2. Returns a new Vec2.
 func (l Vec2) Sub(r Vec2) Vec2 {
-	return sub_arrayof_2float32(l, r)
+	return Vec2{l[X] - r[X], l[Y] - r[Y]}
 }
 
 // Subf component-wise subtracts Vec2 and float32. Returns a new Vec2.
 func (l Vec2) Subf(r float32) Vec2 {
-	return sub_arrayof_2float32(l, Vec2{r, r})
+	return Vec2{l[X] - r, l[Y] - r}
 }
 
 // Mul component-wise multiplies two Vec2. Returns a new Vec2.
 func (l Vec2) Mul(r Vec2) Vec2 {
-	return mul_arrayof_2float32(l, r)
+	return Vec2{l[X] * r[X], l[Y] * r[Y]}
 }
 
 // Mulf component-wise multiplies Vec2 and float32. Returns a new Vec2.
 func (l Vec2) Mulf(r float32) Vec2 {
-	return mul_arrayof_2float32(l, Vec2{r, r})
+	return Vec2{l[X] * r, l[Y] * r}
 }
 
 // Div component-wise divides two Vec2. Returns a new Vec2.
 func (l Vec2) Div(r Vec2) Vec2 {
-	return div_arrayof_2float32(l, r)
+	return Vec2{l[X] / r[X], l[Y] / r[Y]}
 }
 
 // Divf component-wise divides Vec2 and float32. Returns a new Vec2.
 func (l Vec2) Divf(r float32) Vec2 {
-	return div_arrayof_2float32(l, Vec2{r, r})
+	return Vec2{l[X] / r, l[Y] / r}
 }
 
 // Dot calculates the dot-product of two Vec2.

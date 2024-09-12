@@ -8,7 +8,7 @@ import (
 type xx = float64
 
 func floatString(f float32) string {
-	return strconv.FormatFloat(float64(f), 'd', 2, 32)
+	return strconv.FormatFloat(float64(f), 'f', 2, 32)
 }
 
 func ptrcastFloatToUint(f float32) uint32 {

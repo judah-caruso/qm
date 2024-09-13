@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	defer Generate()
+	//defer Generate()
 	Constraint(buildtags.Term("amd64"))
 
 	// @todo: needs an update for fixed-point numbers?

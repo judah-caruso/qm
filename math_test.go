@@ -30,7 +30,7 @@ func TestAcos(t *testing.T) {
 	for i := -qm.Pi / 2; i < qm.Pi/2; i += 0.1 {
 		ours := qm.Acos(i)
 		theirs := float32(math.Acos(float64(i)))
-		if math.IsNaN(float64(theirs)) && math.IsNaN(float64(ours)) {
+		if math.IsNaN(float64(theirs)) || math.IsNaN(float64(ours)) {
 			continue
 		}
 

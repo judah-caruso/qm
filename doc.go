@@ -2,8 +2,9 @@
 //
 // The goal is to create the highest performance math library for Go.
 // Because of this, results for certain operations are less precise than
-// their standard library counterpart. However, this isn't an issue as
-// games do not require incredibly precise math in most cases.
+// their standard library counterpart due to using 16.16 fixed-point numbers.
+// However, this isn't an issue as games do not require incredibly precise
+// math in most cases.
 //
 // # Assembly
 //

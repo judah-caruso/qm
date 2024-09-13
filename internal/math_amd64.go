@@ -12,26 +12,27 @@ func main() {
 	defer Generate()
 	Constraint(buildtags.Term("amd64"))
 
-	TEXT("Sqrt", NOSPLIT|NOFRAME, "func(x float32) float32")
-	Pragma("nosplit")
-	Pragma("noescape")
-	{
-		x := Load(Param("x"), XMM())
-		SQRTPS(x, x)
-		Store(x, ReturnIndex(0))
-		RET()
-	}
-
-	TEXT("InvSqrt", NOSPLIT|NOFRAME, "func(x float32) float32")
-	Pragma("nosplit")
-	Pragma("noescape")
-	{
-		x := Load(Param("x"), XMM())
-		SQRTPS(x, x)
-		RCPSS(x, x)
-		Store(x, ReturnIndex(0))
-		RET()
-	}
+	// @todo: needs an update for fixed-point numbers?
+	//TEXT("Sqrt", NOSPLIT|NOFRAME, "func(x float32) float32")
+	//Pragma("nosplit")
+	//Pragma("noescape")
+	//{
+	//	x := Load(Param("x"), XMM())
+	//	SQRTPS(x, x)
+	//	Store(x, ReturnIndex(0))
+	//	RET()
+	//}
+	//
+	//TEXT("InvSqrt", NOSPLIT|NOFRAME, "func(x float32) float32")
+	//Pragma("nosplit")
+	//Pragma("noescape")
+	//{
+	//	x := Load(Param("x"), XMM())
+	//	SQRTPS(x, x)
+	//	RCPSS(x, x)
+	//	Store(x, ReturnIndex(0))
+	//	RET()
+	//}
 
 	// Until the Go compiler inlines assembly functions,
 	// this will be slower in almost all cases.

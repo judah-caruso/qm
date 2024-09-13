@@ -2,6 +2,7 @@ package qm_test
 
 import (
 	"github.com/judah-caruso/qm"
+	"github.com/judah-caruso/qm/fx"
 	"testing"
 )
 
@@ -43,14 +44,14 @@ func TestVec2_SwizzleNoMethod(t *testing.T) {
 func BenchmarkVec2_QmAdd(b *testing.B) {
 	a := qm.Vec2{1, 2}
 	for i := 0; i < b.N; i++ {
-		a = a.Add(qm.Vec2{float32(i), float32(i - 1)})
+		a = a.Add(qm.Vec2{fx.I(i), fx.I(i - 1)})
 	}
 }
 
 func BenchmarkVec2_GoAdd(b *testing.B) {
-	a := qm.Vec2{1, 2}
+	a := [2]float32{1, 2}
 	for i := 0; i < b.N; i++ {
-		a = puregoVec2_Add(a, qm.Vec2{float32(i), float32(i - 1)})
+		a = puregoVec2_Add(a, [2]float32{float32(i), float32(i - 1)})
 	}
 }
 

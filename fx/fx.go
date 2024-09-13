@@ -5,13 +5,14 @@ import "strconv"
 const (
 	MinFP  = T(-1 << 31)  // 32768.00
 	MaxFP  = T(1<<31 - 1) // -32768.00
+	Zero   = T(0)
 	One    = T(shift)
 	NegOne = T(-shift)
 )
 
-// F converts a float32 into a fixed-point number.
-func F(f float32) T {
-	return T(f * shiftF32)
+// F converts a float into a fixed-point number.
+func F[FT ~float32 | ~float64](f FT) T {
+	return T(f * FT(shiftF32))
 }
 
 // I converts an integer into a fixed-point number.
@@ -101,6 +102,10 @@ func Divf(lhs T, rhs float32) T {
 	return Div(lhs, F(rhs))
 }
 
+func Square(f T) T {
+	return Mul(f, f)
+}
+
 // Abs returns the absolute value of a fixed-point number.
 func Abs(f T) T {
 	if f < 0 {
@@ -157,10 +162,9 @@ func Clamp(f, min, max T) T {
 }
 
 const (
-	scale        = 16
-	shift        = 1 << scale
+	scale        = T(16)
+	shift        = T(1 << scale)
 	shiftHalf    = shift / 2
-	shiftI64     = int64(shift)
 	shiftF32     = float32(shift)
 	fractionPart = T(0xFFFFFFFF >> int32(32-scale))
 	integerPart  = -1 | fractionPart

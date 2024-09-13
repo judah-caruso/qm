@@ -1,12 +1,5 @@
 package qm
 
-// Common math constants.
-const (
-	Pi      float32 = 3.14159265358979323846
-	Tau     float32 = 2 * Pi
-	Epsilon float32 = 0x1.0p-23
-)
-
 // VecElementIndex represents the index of an element for Vector types.
 // This allows array access similar to a struct member. (i.e. v[X] vs. v.X)
 type VecElementIndex uint8
@@ -32,10 +25,3 @@ const (
 	Width  = VecElementIndex(0)
 	Height = VecElementIndex(1)
 )
-
-// Abs calculates the absolute value of x.
-func Abs(x float32) float32 {
-	u := ptrcastFloatToUint(x)
-	u &= 0x7FFF_FFFF
-	return ptrcastUintToFloat(u)
-}

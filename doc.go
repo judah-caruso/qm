@@ -18,7 +18,7 @@
 // However, generating them manually can be done by navigating to the root directory
 // of this package and running:
 //
-//	go generate -v ./generate
+//	go generate -v ./internal
 //
 // # Notes
 //

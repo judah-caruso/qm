@@ -40,11 +40,6 @@ func (l Vec2) Eq(r Vec2) bool {
 	return l[X] == r[X] && l[Y] == r[Y]
 }
 
-// KindaEq compares two Vec2 with approximate equality via Epsilon.
-func (l Vec2) KindaEq(r Vec2) bool {
-	return l[X] == r[X] && l[Y] == r[Y]
-}
-
 // Add component-wise adds two Vec2. Returns a new Vec2.
 func (l Vec2) Add(r Vec2) Vec2 {
 	return Vec2{

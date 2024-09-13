@@ -35,7 +35,7 @@ func TestAcos(t *testing.T) {
 		}
 
 		diff := qm.Abs(ours - theirs)
-		Expectf(t, diff <= 0.1, "qm.Acos(%.4f) deviated from math.Acos too much! %.4f vs %.4f (+- %.4f)", i, ours, theirs, diff)
+		Expectf(t, diff <= 0.0001, "qm.Acos(%.4f) deviated from math.Acos too much! %.4f vs %.4f (+- %.4f)", i, ours, theirs, diff)
 	}
 }
 

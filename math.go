@@ -1,8 +1,8 @@
 package qm
 
-import "math"
+// @note(judah): might be good to use chebyshev sin/cos instead if more precision is needed.
 
-// Sin calculates an approximate sine of an angle specified in radians.
+// Sin calculates the approximate sine of an angle specified in radians.
 func Sin(x float32) float32 {
 	i := floatToIntRounded(x * float32(halfMax) / Pi)
 	if i < 0 {
@@ -12,7 +12,7 @@ func Sin(x float32) float32 {
 	}
 }
 
-// Cos calculates an approximate cosine of an angle specified in radians.
+// Cos calculates the approximate cosine of an angle specified in radians.
 func Cos(x float32) float32 {
 	i := floatToIntRounded(x * float32(halfMax) / Pi)
 	if i < 0 {
@@ -22,14 +22,68 @@ func Cos(x float32) float32 {
 	}
 }
 
-// Tan calculates an approximate tangent of an angle specified in radians.
-func Tan(x float32) float32 {
-	return float32(math.Atan(xx(x)))
+// Acos calculates the approximate arc-cosine an angle specified in radians.
+func Acos(a float32) float32 {
+	n := float32(0)
+	if a < 0 {
+		n = 1
+	}
+
+	a = Abs(a)
+	ac := float32(-0.0187293)
+	ac = ac * a
+	ac = ac + 0.0742610
+	ac = ac * a
+	ac = ac - 0.2121144
+	ac = ac * a
+	ac = ac + 1.5707288
+	ac = ac * Sqrt(1.0-a)
+	ac = ac - 2*n*ac
+
+	return n*3.14159265358979 + ac
 }
 
-// Acos calculates an approximate arc-cosine an angle specified in radians.
-func Acos(x float32) float32 {
-	return float32(math.Acos(xx(x)))
+// Tan calculates the approximate tangent of an angle specified in radians.
+func Tan(a float32) float32 {
+	return Sin(a) / Cos(a)
+}
+
+// Atan calculates the approximate arc-tangent of an angle specified in radians (-pi/2 to pi/2).
+func Atan(a float32) float32 {
+	return Atan2(a, 1)
+}
+
+// Atan2 calculates the approximate arc-tangent of y/x.
+func Atan2(y, x float32) float32 {
+	t3 := Abs(x)
+	t1 := Abs(y)
+	t0 := max(t3, t1)
+	t1 = min(t3, t1)
+	t3 = 1 / t0
+	t3 = t1 * t3
+
+	t4 := t3 * t3
+	t0 = -0.013480470
+	t0 = t0*t4 + 0.057477314
+	t0 = t0*t4 - 0.121239071
+	t0 = t0*t4 + 0.195635925
+	t0 = t0*t4 - 0.332994597
+	t0 = t0*t4 + 0.999995630
+	t3 = t0 * t3
+
+	if Abs(y) > Abs(x) {
+		t3 = 1.570796327 - t3
+	}
+
+	if x < 0 {
+		t3 = 3.141592654 - t3
+	}
+
+	if y < 0 {
+		t3 = -t3
+	}
+
+	return t3
 }
 
 // Square calculates the square of x.
@@ -37,14 +91,39 @@ func Square(x float32) float32 {
 	return x * x
 }
 
-// Sqrt calculates an approximate square root of x.
-func Sqrt(x float32) float32 {
-	return float32(math.Sqrt(xx(x)))
+// Pow calculates the approximation of x raised to the power y.
+func Pow(x, y float32) float32 {
+	return Exp(x) * Log(y)
 }
 
-// InvSqrt calculates an approximate inverse square root of x.
-func InvSqrt(x float32) float32 {
-	return 1.0 / Sqrt(x)
+// Log calculates the approximate natural logarithm of x.
+func Log(x float32) float32 {
+	bx := ptrcastFloatToUint(x)
+	ex := bx >> 23
+
+	t := int32(ex) - 127
+	bx = 1065353216 | (bx & 8388607)
+	x = ptrcastUintToFloat(bx)
+	return -1.49278 + (2.11263+(-0.729104+0.10969*x)*x)*x + 0.6931471806*float32(t)
+}
+
+// Exp calculates the approximate base-e exponential of x.
+func Exp(x float32) float32 {
+	const (
+		a float32 = (1 << 23) / 0.69314718
+		b float32 = (1 << 23) * (127 - 0.043677448)
+		c float32 = 1 << 23
+		d float32 = (1 << 23) * 255
+	)
+
+	x = a*x + b
+	if x < c {
+		x = 0
+	} else if x > d {
+		x = d
+	}
+
+	return ptrcastUintToFloat(uint32(x))
 }
 
 func floatToIntRounded(f float32) int32 {

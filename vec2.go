@@ -8,6 +8,16 @@ import (
 // Vec2 represents a two-component vector.
 type Vec2 [2]fx.T
 
+// V2f creates a Vec2 from two float32.
+func V2f(x, y float32) Vec2 {
+	return Vec2{fx.F(x), fx.F(y)}
+}
+
+// V2i creates a Vec2 from two int.
+func V2i(x, y int) Vec2 {
+	return Vec2{fx.I(x), fx.I(y)}
+}
+
 // Elements returns each element of the Vec2 in order.
 func (v Vec2) Elements() (fx.T, fx.T) {
 	return v[X], v[Y]
@@ -121,7 +131,10 @@ func (l Vec2) MagSqr() fx.T {
 
 // Lerp linearly interpolates from a to b via t. Returns a new Vec2.
 func (a Vec2) Lerp(b Vec2, t fx.T) Vec2 {
-	return Vec2.Add(a.Mulf(1.0-t), b.Mulf(t))
+	return Vec2.Add(
+		a.Mulf(fx.Sub(fx.One(), t)),
+		b.Mulf(t),
+	)
 }
 
 // Rotate rotates a Vec2 via an angle specified in radians. Returns a new Vec2.
@@ -141,12 +154,15 @@ func (a Vec2) Normalize() Vec2 {
 
 // Negate negates each component. Returns a new Vec2.
 func (a Vec2) Negate() Vec2 {
-	return Vec2{-a[X], -a[Y]}
+	return Vec2{fx.Negate(a[X]), fx.Negate(a[Y])}
 }
 
 // Invert calculates the inverse of a Vec2. Returns a new Vec2.
 func (a Vec2) Invert() Vec2 {
-	return Vec2{1.0 / a[X], 1.0 / a[Y]}
+	return Vec2{
+		fx.Div(fx.One(), a[X]),
+		fx.Div(fx.One(), a[Y]),
+	}
 }
 
 // Abs calculates the absolute value of a Vec2. Returns a new Vec2.
@@ -163,5 +179,5 @@ func (a Vec2) Distance(b Vec2) fx.T {
 
 // Reflect calculates a reflected Vec2 via a normal. Returns a new Vec2.
 func (a Vec2) Reflect(normal Vec2) Vec2 {
-	return a.Sub(normal.Mulf(2.0).Mulf(a.Dot(normal)))
+	return a.Sub(normal.Mulf(fx.I(2)).Mulf(a.Dot(normal)))
 }

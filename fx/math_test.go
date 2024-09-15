@@ -8,11 +8,11 @@ import (
 
 func TestSqrt(t *testing.T) {
 	cases := [][2]fx.T{
-		{fx.Zero, fx.Zero},
-		{fx.One, fx.One},
+		{fx.Zero(), fx.Zero()},
+		{fx.One(), fx.One()},
 		{fx.I(4), fx.I(2)},
 		{fx.I(4225), fx.I(65)},
-		{fx.I(-3923), fx.Zero},
+		{fx.I(-3923), fx.Zero()},
 	}
 
 	for _, c := range cases {

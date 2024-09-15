@@ -86,6 +86,7 @@ func (f T) Raw() int32 {
 	return f.int32
 }
 
+// Negate returns the negative value of f.
 func Negate(f T) T {
 	return T{-f.int32}
 }
@@ -166,6 +167,7 @@ func Abs(f T) T {
 	return f
 }
 
+// Round returns f rounded up to the nearest integer.
 func Round(f T) T {
 	return T{(f.int32 + shiftHalf) & -1}
 }
@@ -180,7 +182,7 @@ func Floor(f T) T {
 	return T{(f.int32 - rem) & integerPart}
 }
 
-// Ceil returns the smaller integer value >= x
+// Ceil returns the smaller integer value >= x.
 func Ceil(f T) T {
 	rem := f.int32 & (shift - 1)
 	if rem == 0 {

@@ -6,15 +6,16 @@ import (
 	"go/parser"
 	"go/token"
 	"strconv"
+	"strings"
 )
 
-// MaxT returns the highest value representable by T (approximately 32768.00)
-func MaxT() T {
+// MaximumValue returns the highest value representable by T (approximately 32768.00)
+func MaximumValue() T {
 	return T{1<<31 - 1}
 }
 
-// MinT returns the lowest value representable by T (approximately -32768.00)
-func MinT() T {
+// MinimumValue returns the lowest value representable by T (approximately -32768.00)
+func MinimumValue() T {
 	return T{-1 << 31}
 }
 
@@ -43,80 +44,19 @@ func I(i int) T {
 	return T{int32(i) * shift}
 }
 
-// Expr parses a math expression and returns its fixed-point value.
-// The expression follows the same operator precedence rules as Go.
-// Note: only constant numeric values are valid in the given expression.
-// To use named values, call ExprVars instead.
+// Expr parses a Go math expression and returns its fixed-point value.
+// Note: Only constant numeric values are valid in the given expression. To use named values, call ExprVars instead.
+// Note: This method is much slower than calling standard functions and should only be used to cache calculations.
 func Expr(expr string) T {
-	e, err := parser.ParseExpr(expr)
-	if err != nil {
-		panic(fmt.Errorf("invalid fixed-point expression: %w", err))
-	}
-
-	return eval(e, nil)
+	return eval(parse(expr), nil)
 }
 
-func eval(e ast.Expr, lookup ExprVarMap) T {
-	switch v := e.(type) {
-	case *ast.BinaryExpr:
-		lhs := eval(v.X, lookup)
-		rhs := eval(v.Y, lookup)
-
-		switch v.Op {
-		case token.ADD:
-			return Add(lhs, rhs)
-		case token.SUB:
-			return Sub(lhs, rhs)
-		case token.MUL:
-			return Mul(lhs, rhs)
-		case token.QUO:
-			return Div(lhs, rhs)
-		case token.REM:
-			return Mod(lhs, rhs)
-		default:
-			panic(fmt.Errorf("unexpected operator in fixed-point expression: %s", v.Op))
-		}
-
-	case *ast.BasicLit:
-		if v.Kind != token.INT && v.Kind != token.FLOAT {
-			panic(fmt.Errorf("unexpected value in fixed-point expression: %s", v.Value))
-		}
-
-		f, err := strconv.ParseFloat(v.Value, 32)
-		if err != nil {
-			panic(fmt.Errorf("invalid number in fixed-point expression: %s", v.Value))
-		}
-
-		return F(float32(f))
-
-	case *ast.Ident:
-		if lookup != nil {
-			f, ok := lookup[v.Name]
-			if !ok {
-				goto error
-			}
-
-			return f
-		}
-
-	error:
-		panic(fmt.Errorf("unexpected identifier in fixed-point expression: %s", v.Name))
-
-	case *ast.ParenExpr:
-		return eval(v.X, lookup)
-
-	default:
-		panic(fmt.Errorf("unexpected node in parsed fixed-point expression: %T", v))
-	}
-
-	return Zero()
-}
-
+// ExprVarMap is used to pass named values to a fixed-point expression.
 type ExprVarMap map[string]T
 
-// ExprVars parses a math expression and returns its fixed-point value.
+// ExprVars parses a Go math expression and returns its fixed-point value.
 func ExprVars(expr string, values ExprVarMap) T {
-	return T{0}
+	return eval(parse(expr), values)
 }
 
 // T represents a 16.16 fixed-point number.
@@ -281,3 +221,83 @@ const (
 	fractionPart = int32(0xFFFFFFFF >> int32(32-scale))
 	integerPart  = -1 | fractionPart
 )
+
+func parse(expr string) ast.Expr {
+	e, err := parser.ParseExpr(expr)
+	if err != nil {
+		panic(fmt.Errorf("invalid fixed-point expression: %w", err))
+	}
+	return e
+}
+
+func eval(e ast.Expr, lookup ExprVarMap) T {
+	switch v := e.(type) {
+	case *ast.BasicLit:
+		if v.Kind != token.INT && v.Kind != token.FLOAT {
+			panic(fmt.Errorf("unexpected value in fixed-point expression: %s", v.Value))
+		}
+
+		f, err := strconv.ParseFloat(v.Value, 32)
+		if err != nil {
+			panic(fmt.Errorf("invalid number in fixed-point expression: %s", v.Value))
+		}
+
+		return F(float32(f))
+
+	case *ast.UnaryExpr:
+		lhs := eval(v.X, lookup)
+		switch v.Op {
+		case token.SUB:
+			return Negate(lhs)
+		default:
+			panic(fmt.Errorf("unexpected operator in fixed-point expression: %s", v.Op))
+		}
+
+	case *ast.BinaryExpr:
+		lhs := eval(v.X, lookup)
+		rhs := eval(v.Y, lookup)
+
+		switch v.Op {
+		case token.ADD:
+			return Add(lhs, rhs)
+		case token.SUB:
+			return Sub(lhs, rhs)
+		case token.MUL:
+			return Mul(lhs, rhs)
+		case token.QUO:
+			return Div(lhs, rhs)
+		case token.REM:
+			return Mod(lhs, rhs)
+		default:
+			panic(fmt.Errorf("unexpected operator in fixed-point expression: %s", v.Op))
+		}
+
+	case *ast.Ident:
+		if lookup != nil {
+			f, ok := lookup[v.Name]
+			if !ok {
+				goto checkForConstants
+			}
+
+			return f
+		}
+
+	checkForConstants:
+		switch strings.ToLower(v.Name) {
+		case "pi":
+			return Pi()
+		case "tau":
+			return Tau()
+		default:
+			panic(fmt.Errorf("unexpected identifier in fixed-point expression: %s", v.Name))
+		}
+
+	case *ast.ParenExpr:
+		return eval(v.X, lookup)
+
+	default:
+		panic(fmt.Errorf("unexpected node in parsed fixed-point expression: %T", v))
+	}
+
+	return Zero()
+}

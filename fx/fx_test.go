@@ -2,6 +2,7 @@ package fx_test
 
 import (
 	"github.com/judah-caruso/qm/fx"
+	"math"
 	"testing"
 )
 
@@ -16,8 +17,8 @@ func TestStringification(t *testing.T) {
 		{fx.F(-3.14159), "-3.1415863"},
 		{fx.I(1), "1"},
 		{fx.I(-1), "-1"},
-		{fx.MinT(), "-32768"},
-		{fx.MaxT(), "32768"},
+		{fx.MinimumValue(), "-32768"},
+		{fx.MaximumValue(), "32768"},
 	}
 
 	for _, c := range cases {
@@ -124,18 +125,38 @@ func TestClamp(t *testing.T) {
 
 func TestExpr(t *testing.T) {
 	cases := []struct {
-		input  string
-		output fx.T
+		input string
+		res   fx.T
 	}{
 		{"  1 + 1 ", fx.I(2)},
 		{"2 + 5 - 3.0", fx.F(2 + 5 - 3.0)},
 		{" 10.3 * (2   + 1.25)", fx.F(10.3 * (2.0 + 1.25))},
+		{"-1/2*4", fx.F(-1.0 / 2 * 4)},
 	}
 
 	for _, c := range cases {
 		res := fx.Expr(c.input)
-		if res != c.output {
-			t.Errorf("expected %v to be %v, was %v", c.input, c.output, res)
+		if math.Abs(res.Float64()-c.res.Float64()) >= 0.0001 {
+			t.Errorf("expected %v to be %v, was %v", c.input, c.res, res)
+		}
+	}
+}
+
+func TestExprVars(t *testing.T) {
+	cases := []struct {
+		input string
+		vars  fx.ExprVarMap
+		res   fx.T
+	}{
+		{"Pi / 2 ", fx.ExprVarMap{"Pi": fx.Pi()}, fx.Div(fx.Pi(), fx.F(2.0))},
+		{"1 - t", fx.ExprVarMap{"t": fx.F(3.14)}, fx.Sub(fx.One(), fx.F(3.14))},
+		{"-1 / n", fx.ExprVarMap{"n": fx.I(5)}, fx.Div(fx.NegOne(), fx.I(5))},
+	}
+
+	for _, c := range cases {
+		res := fx.ExprVars(c.input, c.vars)
+		if math.Abs(res.Float64()-c.res.Float64()) >= 0.0001 {
+			t.Errorf("expected %v to be %v, was %v", c.input, c.res, res)
 		}
 	}
 }

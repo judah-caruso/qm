@@ -64,6 +64,21 @@ func (l Vec3) Div(r Vec3) Vec3 {
 	}
 }
 
+func (l Vec3) Dot(r Vec3) fx.T {
+	return fx.Add(
+		fx.Add(fx.Mul(l[X], r[X]), fx.Mul(l[Y], r[Y])),
+		fx.Mul(l[Z], r[Z]),
+	)
+}
+
+func (v Vec3) Mag() fx.T {
+	return fx.Sqrt(v.MagSqr())
+}
+
+func (v Vec3) MagSqr() fx.T {
+	return v.Dot(v)
+}
+
 // Lerp linearly interpolates from a to b via t. Returns a new Vec3.
 func (a Vec3) Lerp(b Vec3, t fx.T) Vec3 {
 	return Vec3.Add(
@@ -72,29 +87,33 @@ func (a Vec3) Lerp(b Vec3, t fx.T) Vec3 {
 	)
 }
 
+func (v Vec3) Normalize() Vec3 {
+	return v.Mulf(fx.InvSqrt(v.Dot(v)))
+}
+
 // Negate negates each component. Returns a new Vec3.
-func (a Vec3) Negate() Vec3 {
+func (v Vec3) Negate() Vec3 {
 	return Vec3{
-		fx.Negate(a[X]),
-		fx.Negate(a[Y]),
-		fx.Negate(a[Z]),
+		fx.Negate(v[X]),
+		fx.Negate(v[Y]),
+		fx.Negate(v[Z]),
 	}
 }
 
 // Invert calculates the inverse of a Vec3. Returns a new Vec3.
-func (a Vec3) Invert() Vec3 {
+func (v Vec3) Invert() Vec3 {
 	return Vec3{
-		fx.Div(fx.One(), a[X]),
-		fx.Div(fx.One(), a[Y]),
-		fx.Div(fx.One(), a[Z]),
+		fx.Div(fx.One(), v[X]),
+		fx.Div(fx.One(), v[Y]),
+		fx.Div(fx.One(), v[Z]),
 	}
 }
 
 // Abs calculates the absolute value of a Vec2. Returns a new Vec2.
-func (a Vec3) Abs() Vec3 {
+func (v Vec3) Abs() Vec3 {
 	return Vec3{
-		fx.Abs(a[X]),
-		fx.Abs(a[Y]),
-		fx.Abs(a[Z]),
+		fx.Abs(v[X]),
+		fx.Abs(v[Y]),
+		fx.Abs(v[Z]),
 	}
 }

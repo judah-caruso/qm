@@ -29,7 +29,7 @@ func (v Vec2) String() string {
 
 // Swizzle is a slower, but possibly clearer alternative to swizzling the Vec2 via array access.
 // Swizzle panics if given invalid or too many elements.
-func (a Vec2) Swizzle(el ...VecElementIndex) Vec2 {
+func (v Vec2) Swizzle(el ...VecElementIndex) Vec2 {
 	if len(el) != 2 {
 		panic(fmt.Sprintf("invalid swizzle of Vec2 (given %d elements)", len(el)))
 	}
@@ -38,14 +38,14 @@ func (a Vec2) Swizzle(el ...VecElementIndex) Vec2 {
 	py := el[1]
 
 	if px < 0 || px > 1 {
-		panic(fmt.Sprintf("invalid swizzle of Vec2 (element %d does not exist)", el[0]))
+		panic(fmt.Sprintf("invalid swizzle of Vec2 (element %d does not exist)", px))
 	}
 
 	if py < 0 || py > 1 {
-		panic(fmt.Sprintf("invalid swizzle of Vec2 (element %d does not exist)", el[1]))
+		panic(fmt.Sprintf("invalid swizzle of Vec2 (element %d does not exist)", py))
 	}
 
-	return Vec2{a[px], a[py]}
+	return Vec2{v[px], v[py]}
 }
 
 // Eq compares two Vec2 with strict equality.
@@ -123,13 +123,13 @@ func (l Vec2) Dot(r Vec2) fx.T {
 }
 
 // Mag calculates the magnitude (length) of a Vec2.
-func (l Vec2) Mag() fx.T {
-	return fx.Sqrt(l.MagSqr())
+func (v Vec2) Mag() fx.T {
+	return fx.Sqrt(v.MagSqr())
 }
 
 // MagSqr calculates the square magnitude (length) of a Vec2.
-func (l Vec2) MagSqr() fx.T {
-	return l.Dot(l)
+func (v Vec2) MagSqr() fx.T {
+	return v.Dot(v)
 }
 
 // Lerp linearly interpolates from a to b via t. Returns a new Vec2.
@@ -141,36 +141,36 @@ func (a Vec2) Lerp(b Vec2, t fx.T) Vec2 {
 }
 
 // Rotate rotates a Vec2 via an angle specified in radians. Returns a new Vec2.
-func (a Vec2) Rotate(angle fx.T) Vec2 {
+func (v Vec2) Rotate(angle fx.T) Vec2 {
 	sin := fx.Sin(angle)
 	cos := fx.Cos(angle)
 	return Vec2{
-		fx.Sub(fx.Mul(a[X], cos), fx.Mul(a[Y], sin)),
-		fx.Add(fx.Mul(a[X], sin), fx.Mul(a[Y], cos)),
+		fx.Sub(fx.Mul(v[X], cos), fx.Mul(v[Y], sin)),
+		fx.Add(fx.Mul(v[X], sin), fx.Mul(v[Y], cos)),
 	}
 }
 
 // Normalize returns a new Vec2 with the same direction, but a magnitude of 1.
-func (a Vec2) Normalize() Vec2 {
-	return a.Mulf(fx.InvSqrt(a.Dot(a)))
+func (v Vec2) Normalize() Vec2 {
+	return v.Mulf(fx.InvSqrt(v.Dot(v)))
 }
 
 // Negate negates each component. Returns a new Vec2.
-func (a Vec2) Negate() Vec2 {
-	return Vec2{fx.Negate(a[X]), fx.Negate(a[Y])}
+func (v Vec2) Negate() Vec2 {
+	return Vec2{fx.Negate(v[X]), fx.Negate(v[Y])}
 }
 
 // Invert calculates the inverse of a Vec2. Returns a new Vec2.
-func (a Vec2) Invert() Vec2 {
+func (v Vec2) Invert() Vec2 {
 	return Vec2{
-		fx.Div(fx.One(), a[X]),
-		fx.Div(fx.One(), a[Y]),
+		fx.Div(fx.One(), v[X]),
+		fx.Div(fx.One(), v[Y]),
 	}
 }
 
 // Abs calculates the absolute value of a Vec2. Returns a new Vec2.
-func (a Vec2) Abs() Vec2 {
-	return Vec2{fx.Abs(a[X]), fx.Abs(a[Y])}
+func (v Vec2) Abs() Vec2 {
+	return Vec2{fx.Abs(v[X]), fx.Abs(v[Y])}
 }
 
 // Distance calculates the distance between two Vec2.
@@ -181,6 +181,6 @@ func (a Vec2) Distance(b Vec2) fx.T {
 }
 
 // Reflect calculates a reflected Vec2 via a normal. Returns a new Vec2.
-func (a Vec2) Reflect(normal Vec2) Vec2 {
-	return a.Sub(normal.Mulf(fx.I(2)).Mulf(a.Dot(normal)))
+func (v Vec2) Reflect(normal Vec2) Vec2 {
+	return v.Sub(normal.Mulf(fx.I(2)).Mulf(v.Dot(normal)))
 }

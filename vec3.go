@@ -15,7 +15,7 @@ func V3i(x, y, z int) Vec3 {
 	return Vec3{fx.I(x), fx.I(y), fx.I(z)}
 }
 
-func (v Vec3) Elements() (fx.T, fx.T, fx.T) {
+func (v Vec3) Elements() (x, y, z fx.T) {
 	return v[X], v[Y], v[Z]
 }
 

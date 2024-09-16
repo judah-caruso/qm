@@ -19,7 +19,7 @@ func V2i(x, y int) Vec2 {
 }
 
 // Elements returns each element of the Vec2 in order.
-func (v Vec2) Elements() (fx.T, fx.T) {
+func (v Vec2) Elements() (x, y fx.T) {
 	return v[X], v[Y]
 }
 

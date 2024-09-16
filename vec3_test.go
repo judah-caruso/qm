@@ -44,3 +44,21 @@ func TestVec3_Swizzle(t *testing.T) {
 	e := a.Swizzle(qm.Z, qm.Z, qm.Z)
 	Expect(t, e[qm.X].Int() == 3 && e[qm.Y].Int() == 3 && e[qm.Z].Int() == 3)
 }
+
+func BenchmarkVec3_QmAdd(b *testing.B) {
+	a := qm.V3i(1, 2, 3)
+	for i := 0; i < b.N; i++ {
+		a = a.Add(qm.V3i(i, i-1, i+1))
+	}
+}
+
+func BenchmarkVec3_GoAdd(b *testing.B) {
+	a := [3]float32{1, 2, 3}
+	for i := 0; i < b.N; i++ {
+		a = puregoVec3_Add(a, [3]float32{float32(i), float32(i - 1), float32(i + 1)})
+	}
+}
+
+func puregoVec3_Add(l, r [3]float32) [3]float32 {
+	return [3]float32{l[0] + r[0], l[1] + r[1], l[2] + r[2]}
+}

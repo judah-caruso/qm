@@ -2,7 +2,6 @@ package qm_test
 
 import (
 	"github.com/judah-caruso/qm"
-	"github.com/judah-caruso/qm/fx"
 	"testing"
 )
 
@@ -59,7 +58,7 @@ func TestVec2_SwizzleNoMethod(t *testing.T) {
 func BenchmarkVec2_QmAdd(b *testing.B) {
 	a := qm.V2i(1, 2)
 	for i := 0; i < b.N; i++ {
-		a = a.Add(qm.Vec2{fx.I(i), fx.I(i - 1)})
+		a = a.Add(qm.V2i(i, i-1))
 	}
 }
 

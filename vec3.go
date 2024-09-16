@@ -1,6 +1,9 @@
 package qm
 
-import "github.com/judah-caruso/qm/fx"
+import (
+	"fmt"
+	"github.com/judah-caruso/qm/fx"
+)
 
 type Vec3 [3]fx.T
 
@@ -22,6 +25,29 @@ func (v Vec3) String() string {
 
 func (l Vec3) Eq(r Vec3) bool {
 	return l[X] == r[X] && l[Y] == r[Y] && l[Z] == r[Z]
+}
+
+func (v Vec3) Swizzle(el ...VecElementIndex) Vec3 {
+	if len(el) != 3 {
+		panic(fmt.Sprintf("invalid swizzle of Vec3 (given %d elements, required 3)", len(el)))
+	}
+
+	px := el[0]
+	if px < 0 || px > 2 {
+		panic(fmt.Sprintf("invalid swizzle of Vec3 (element %d does not exist)", px))
+	}
+
+	py := el[1]
+	if py < 0 || py > 2 {
+		panic(fmt.Sprintf("invalid swizzle of Vec3 (element %d does not exist)", py))
+	}
+
+	pz := el[2]
+	if pz < 0 || pz > 2 {
+		panic(fmt.Sprintf("invalid swizzle of Vec3 (element %d does not exist)", pz))
+	}
+
+	return Vec3{v[px], v[py], v[pz]}
 }
 
 func (l Vec3) Add(r Vec3) Vec3 {

@@ -31,16 +31,15 @@ func (v Vec2) String() string {
 // Swizzle panics if given invalid or too many elements.
 func (v Vec2) Swizzle(el ...VecElementIndex) Vec2 {
 	if len(el) != 2 {
-		panic(fmt.Sprintf("invalid swizzle of Vec2 (given %d elements)", len(el)))
+		panic(fmt.Sprintf("invalid swizzle of Vec2 (given %d elements, required 2)", len(el)))
 	}
 
 	px := el[0]
-	py := el[1]
-
 	if px < 0 || px > 1 {
 		panic(fmt.Sprintf("invalid swizzle of Vec2 (element %d does not exist)", px))
 	}
 
+	py := el[1]
 	if py < 0 || py > 1 {
 		panic(fmt.Sprintf("invalid swizzle of Vec2 (element %d does not exist)", py))
 	}

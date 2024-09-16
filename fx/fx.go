@@ -9,14 +9,14 @@ import (
 	"strings"
 )
 
-// MaximumValue returns the highest value representable by T (approximately 32768.00)
-func MaximumValue() T {
-	return T{1<<31 - 1}
-}
-
 // MinimumValue returns the lowest value representable by T (approximately -32768.00)
 func MinimumValue() T {
 	return T{-1 << 31}
+}
+
+// MaximumValue returns the highest value representable by T (approximately 32768.00)
+func MaximumValue() T {
+	return T{1<<31 - 1}
 }
 
 // Zero returns the fixed-point value of 0.
@@ -44,7 +44,7 @@ func I(i int) T {
 	return T{int32(i) * shift}
 }
 
-// Expr parses a Go math expression and returns its fixed-point value.
+// Expr parses a Go math expression and returns its fixed-point value. It will panic when given an invalid expression.
 // Note: Only constant numeric values are valid in the given expression. To use named values, call ExprVars instead.
 // Note: This method is much slower than calling standard functions and should only be used to cache calculations.
 func Expr(expr string) T {
@@ -55,6 +55,7 @@ func Expr(expr string) T {
 type ExprVarMap map[string]T
 
 // ExprVars parses a Go math expression and returns its fixed-point value.
+// Unlike Expr, ExprVars allows a list of variables to be passed from the outside context.
 func ExprVars(expr string, values ExprVarMap) T {
 	return eval(parse(expr), values)
 }

@@ -34,15 +34,18 @@ func (a Vec2) Swizzle(el ...VecElementIndex) Vec2 {
 		panic(fmt.Sprintf("invalid swizzle of Vec2 (given %d elements)", len(el)))
 	}
 
-	if el[0] > 1 {
+	px := el[0]
+	py := el[1]
+
+	if px < 0 || px > 1 {
 		panic(fmt.Sprintf("invalid swizzle of Vec2 (element %d does not exist)", el[0]))
 	}
 
-	if el[1] > 1 {
+	if py < 0 || py > 1 {
 		panic(fmt.Sprintf("invalid swizzle of Vec2 (element %d does not exist)", el[1]))
 	}
 
-	return Vec2{a[el[0]], a[el[1]]}
+	return Vec2{a[px], a[py]}
 }
 
 // Eq compares two Vec2 with strict equality.

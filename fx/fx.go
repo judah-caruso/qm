@@ -6,7 +6,6 @@ import (
 	"go/parser"
 	"go/token"
 	"strconv"
-	"strings"
 )
 
 // MinimumValue returns the lowest value representable by T (approximately -32768.00)
@@ -14,7 +13,7 @@ func MinimumValue() T {
 	return T{-1 << 31}
 }
 
-// MaximumValue returns the highest value representable by T (approximately 32768.00)
+// MaximumValue returns the highest value representable by T (approximately 32767.00)
 func MaximumValue() T {
 	return T{1<<31 - 1}
 }
@@ -85,6 +84,31 @@ func (f T) Int() int {
 // Raw returns the internal representation of f.
 func (f T) Raw() int32 {
 	return f.int32
+}
+
+// Eq returns true if two fixed-pointer numbers are equal.
+func (l T) Eq(r T) bool {
+	return l.int32 == r.int32
+}
+
+// Gt returns true if l is greater than r.
+func (l T) Gt(r T) bool {
+	return l.int32 > r.int32
+}
+
+// GtEq returns true if l is greater than or equal to r.
+func (l T) GtEq(r T) bool {
+	return l.int32 >= r.int32
+}
+
+// Lt returns true if l is less than r.
+func (l T) Lt(r T) bool {
+	return l.int32 < r.int32
+}
+
+// LtEq returns true if l is less than or equal to r.
+func (l T) LtEq(r T) bool {
+	return l.int32 <= r.int32
 }
 
 // Negate returns the negative value of f.
@@ -286,10 +310,10 @@ func eval(e ast.Expr, lookup ExprVarMap) T {
 		}
 
 	checkForConstants:
-		switch strings.ToLower(v.Name) {
-		case "pi":
+		switch v.Name {
+		case "pi", "Pi", "PI":
 			return Pi()
-		case "tau":
+		case "tau", "Tau", "TAU":
 			return Tau()
 		default:
 			panic(fmt.Errorf("unexpected identifier in fixed-point expression: %s", v.Name))

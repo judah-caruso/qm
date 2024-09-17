@@ -139,6 +139,14 @@ func (a Vec2) Lerp(b Vec2, t fx.T) Vec2 {
 	)
 }
 
+// Clamp returns a new Vec2 that is >= min and <= max.
+func (v Vec2) Clamp(min, max Vec2) Vec2 {
+	return Vec2{
+		fx.Clamp(v[X], min[X], max[X]),
+		fx.Clamp(v[Y], min[Y], max[Y]),
+	}
+}
+
 // Rotate rotates a Vec2 via an angle specified in radians. Returns a new Vec2.
 func (v Vec2) Rotate(angle fx.T) Vec2 {
 	sin := fx.Sin(angle)

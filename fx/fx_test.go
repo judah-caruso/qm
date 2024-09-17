@@ -29,6 +29,30 @@ func TestStringification(t *testing.T) {
 	}
 }
 
+func TestComparison(t *testing.T) {
+	cases := []struct {
+		lhs, rhs fx.T
+		op       func(lhs, rhs fx.T) bool
+	}{
+		{lhs: fx.F(3.14), rhs: fx.F(1.0), op: fx.T.Gt},
+		{lhs: fx.F(3.145), rhs: fx.F(3.14), op: fx.T.GtEq},
+		{lhs: fx.F(0.0), rhs: fx.F(-1.0), op: fx.T.Gt},
+		{lhs: fx.F(1.0), rhs: fx.F(3.14), op: fx.T.Lt},
+		{lhs: fx.F(-1.0), rhs: fx.F(0.0), op: fx.T.LtEq},
+		{lhs: fx.F(-1.1), rhs: fx.F(-1.0), op: fx.T.LtEq},
+		{lhs: fx.F(1.1), rhs: fx.F(1.1), op: fx.T.Eq},
+		{lhs: fx.F(0.0), rhs: fx.F(1.0), op: func(lhs, rhs fx.T) bool {
+			return !fx.T.Eq(lhs, rhs)
+		}},
+	}
+
+	for i, c := range cases {
+		if !c.op(c.lhs, c.rhs) {
+			t.Errorf("%d: comparsion failed!", i)
+		}
+	}
+}
+
 func TestAdd(t *testing.T) {
 	f := fx.Add(fx.I(2), fx.I(2))
 	if f.Raw() != 4*shift {
